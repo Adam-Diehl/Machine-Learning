@@ -23,6 +23,8 @@ fitnessFunction = function(x, y, z, a, b) {
   #Runtime controls - 3 different exit conditions for the optimization routine
   maxIterations = 5000
   maxTime = 170 #170 seconds, 10 seconds short of 3 minutes just for safety's sake
+  populationStagnationCap = 1000 #Number of iterations without a new best solution
+  burnInPeriod = 100 #Number of iterations to allow before checking stagnation
 
   #Portfolio parameters - a gene corresponds to a weight for a single stock
   numberOfGenes = 5
@@ -57,6 +59,9 @@ fitnessFunction = function(x, y, z, a, b) {
 #Initialize iterations count
   iterations = 0
   
+#Initialize population stagnation index
+  populationStagnationIndex = 0
+  
 #Algorithm iteration
   #STEPS CORRESPOND TO THE ORDER THE NEW MATRIX IS FILLED
     #Step 1: Elitism
@@ -64,7 +69,7 @@ fitnessFunction = function(x, y, z, a, b) {
     #Step 3: Mutation
     #Step 4: Random Immigrants (totally new solutions)
 
-while(iterations < maxIterations && (currentTime - startTime) < maxTime) {
+while(iterations < maxIterations && (currentTime - startTime) < maxTime && populationStagnationIndex < populationStagnationCap) {
     
   #Create a score vector
   scoreVect = matrix(0, numberOfIndividuals, 1)
@@ -120,6 +125,11 @@ while(iterations < maxIterations && (currentTime - startTime) < maxTime) {
   #Update exit conditions
   iterations = iterations + 1
   currentTime = Sys.time()
+  if(iterations > burnInPeriod && solutionFitness[iterations] == solutionFitness[iterations-1]) {
+    populationStagnationIndex = populationStagnationIndex + 1
+  } else {
+    populationStagnationIndex = 0
+  }
 }
   
 #Delete the dummy entry from the solution matrix
@@ -138,5 +148,5 @@ while(iterations < maxIterations && (currentTime - startTime) < maxTime) {
   print("Time elapsed:")
   print(codeExitTime - codeEnterTime)
   print("Solution convergence")
-  lines(solutionFitness, type = "l", main = "Convergence of Optimal Solutions", xlab = "Iteration", ylab = "Log Inverse of Fitness")
+  plot(solutionFitness, type = "l", main = "Convergence of Optimal Solutions", xlab = "Iteration", ylab = "Log Inverse of Fitness")
   
