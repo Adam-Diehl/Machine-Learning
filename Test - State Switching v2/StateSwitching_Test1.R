@@ -11,7 +11,7 @@ for(i in 1:length(NoSwitchingFitness)) {
   NoSwitchingFitness[i] = x$FinalFitness
   NoSwitchingIterations[i] = x$Iterations
   NoSwitchingRunTime[i] = x$RunTime
-  y = SSAGA11(fitness_function_SPHCOS, 1000, 10, 100, 10)
+  y = SSAGA11(fitness_function_SPH, 1000, 10, 100, 10)
   SwitchingFitness[i] = y$FinalFitness
   SwitchingIterations[i] = y$Iterations
   SwitchingRunTime[i] = y$RunTime
