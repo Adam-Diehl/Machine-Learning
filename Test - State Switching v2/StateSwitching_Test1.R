@@ -1,9 +1,9 @@
-NoSwitchingFitness = numeric(5000)
-NoSwitchingIterations = numeric(5000)
-NoSwitchingRunTime = numeric(5000)
-SwitchingFitness = numeric(5000)
-SwitchingIterations = numeric(5000)
-SwitchingRunTime = numeric(5000)
+NoSwitchingFitness = numeric(1000)
+NoSwitchingIterations = numeric(1000)
+NoSwitchingRunTime = numeric(1000)
+SwitchingFitness = numeric(1000)
+SwitchingIterations = numeric(1000)
+SwitchingRunTime = numeric(1000)
 
 for(i in 1:length(NoSwitchingFitness)) {
   print(i)
