@@ -7,7 +7,7 @@ SwitchingRunTime = numeric(1000)
 
 for(i in 1:length(NoSwitchingFitness)) {
   print(i)
-  x = SSAGA(fitness_function_SPHCOS, 1000, 10, 100, 10)
+  x = SSAGA(fitness_function_SPH, 1000, 10, 100, 10)
   NoSwitchingFitness[i] = x$FinalFitness
   NoSwitchingIterations[i] = x$Iterations
   NoSwitchingRunTime[i] = x$RunTime
