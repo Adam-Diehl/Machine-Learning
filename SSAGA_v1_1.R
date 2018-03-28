@@ -21,11 +21,11 @@ SSAGA11 = function(fitness_func, max_iterations, max_runtime, max_stagnation, in
   ################ STATE INSTATIATION ################
   
   #Set algorithm parameters
-  PopulationSize = 64
+  PopulationSize = 100
   GeneticOperator_Primary = (1/2)
   GeneticOperator_Secondary = (1/4)
-  GeneticOperator_Tertiary = (3/16)
-  GeneticOperator_Quaternary = (1/16)
+  GeneticOperator_Tertiary = (1/5)
+  GeneticOperator_Quaternary = (1/20)
   
   #Set states as vector - position 1 = E, position 2 = CO, position 3 = M, position 4 = RI
   StateBias_Elitism = c(PopulationSize*GeneticOperator_Primary, PopulationSize*GeneticOperator_Tertiary, PopulationSize*GeneticOperator_Secondary, PopulationSize*GeneticOperator_Quaternary)
