@@ -8,7 +8,7 @@ fitness_function_Markowitz_EF = function(weights, returns, risk, lambda) {
 
 ################### DATA IMPORT ################### 
 
-NASDAQdata = read.csv('StockDataV2.csv')
+NASDAQdata = read.csv('~/Documents/College-4-Senior Year/Second Semester/FIN 480/Research Paper/Data/StockDataV2.csv')
 
 NASDAQdata = NASDAQdata[,-95]
 nRows = as.numeric(dim(NASDAQdata)[1])
@@ -61,11 +61,15 @@ enableJIT(2)
 fitness_function_M_EF = cmpfun(fitness_function_Markowitz_EF) 
 SSAGAcomp = cmpfun(SSAGA12_PE)
 
-EfficientFrontier = matrix(0, nrow = 101, ncol = 2)
+EfficientFrontier = as.data.frame(matrix(0, nrow = 101, ncol = 2))
+colnames(EfficientFrontier) = c("Returns", "Risk")
 
-for(i in 0:100) {
-  Lambda = i/100
-  OptimizationOutput = SSAGAcomp(fitness_function_M_EF, 2000, 10, 100, dim(ReturnData)[2], alpha, omega, Lambda)
-  EfficientFrontier[i,1] = OptimizationOutput$Returns
-  EfficientFrontier[i,2] = OptimizationOutput$Risk
+for(i in 1:1000) {
+  print(i)
+  Lambda = runif(1,0,1)
+  print(Lambda)
+  OptimizationOutput = SSAGAcomp(fitness_function_M_EF, 1500, 10, 100, dim(ReturnData)[2], alpha, omega, Lambda)
+  EfficientFrontier[[i,1]] = OptimizationOutput$Returns
+  EfficientFrontier[[i,2]] = OptimizationOutput$Risk
 }
+ggplot(data = EfficientFrontier, aes(x = Risk, y = Returns)) + geom_point() + theme_minimal() + labs(title = "Efficient Frontier for the NASDAQ 100") + theme(plot.title = element_text(hjust = 0.5))

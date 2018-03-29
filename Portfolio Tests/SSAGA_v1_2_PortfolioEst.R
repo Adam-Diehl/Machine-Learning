@@ -206,8 +206,8 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
   ReturnObject$FitnessHistory = SolutionFitness
   ReturnObject$FitnessGrowth = diff(SolutionFitness)
   ReturnObject$GeneticDiversity = SumDistance[1:iterations]
-  ReturnObject$Returns = as.numeric(1 + (t(OldPopulation[1,]) %*% alpha)^252 - 1)
-  ReturnObject$Risk = as.numeric((t(OldPopulation[1,]) %*% omega %*% OldPopulation[1,])*sqrt(252))
+  ReturnObject$Returns = (1 + as.numeric((t(OldPopulation[1,]) %*% alpha)))^252 - 1
+  ReturnObject$Risk = as.numeric(sqrt((t(OldPopulation[1,]) %*% omega %*% OldPopulation[1,])*sqrt(252)))
   ReturnObject = ReturnObject[-1]
   return(ReturnObject)
   
