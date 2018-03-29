@@ -65,7 +65,7 @@ EfficientFrontier = matrix(0, nrow = 101, ncol = 2)
 
 for(i in 0:100) {
   Lambda = i/100
-  OptimizationOutput = SSAGAcomp(fitness_function_M_EF, 1000, 30, 100, dim(ReturnData)[2], alpha, omega, Lambda)
+  OptimizationOutput = SSAGAcomp(fitness_function_M_EF, 2000, 10, 100, dim(ReturnData)[2], alpha, omega, Lambda)
   EfficientFrontier[i,1] = OptimizationOutput$Returns
   EfficientFrontier[i,2] = OptimizationOutput$Risk
 }
