@@ -1,4 +1,6 @@
-SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation, input_width, returns_mtx, risk_mtx, lambda) {
+require(moments)
+
+SSAGA13_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation, input_width, returns_mtx, risk_mtx, skew_tsr, kurt_tsr, lambda1, lambda2, lambda3, lambda4) {
   
   ################ TOP LEVEL DOCUMENTATION ################
   #Input documentation
@@ -98,7 +100,7 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
     
     #Score the entries
     for(i in 1:PopulationSize) {
-      scoreVect[i] = fitness_func(OldPopulation[i,], returns_mtx, risk_mtx, lambda)
+      scoreVect[i] = fitness_func(OldPopulation[i,], returns_mtx, risk_mtx, skew_tsr, kurt_tsr, lambda1, lambda2, lambda3, lambda4)
     }
     
     #Bind the score column to the solutions matrix
@@ -106,7 +108,7 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
     
     #Sort by score
     OldPopulation = OldPopulation[order(-OldPopulation[,input_width+1]),]
-
+    
     #Record the best score (relative)
     SolutionFitness = append(SolutionFitness, log(1/(1+OldPopulation[1, input_width+1])))
     
@@ -114,7 +116,7 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
     OldPopulation = OldPopulation[,-(input_width+1)]
     
     #Calculate the current fitness of the best score (objective)
-    CurrentFitness = fitness_func(OldPopulation[1,], returns_mtx, risk_mtx, lambda)
+    CurrentFitness = fitness_func(OldPopulation[i,], returns_mtx, risk_mtx, skew_tsr, kurt_tsr, lambda1, lambda2, lambda3, lambda4)
     
     #Carry over the top individuals to the next population
     for(i in 1:CurrentState[1]) {
@@ -184,18 +186,14 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
   #Delete the dummy entry from the solution matrix
   SolutionFitness = SolutionFitness[-1]
   
-  #Port stats
-  mu = t(OldPopulation[1,]) %*% returns_mtx
-  sq = t(OldPopulation[1,]) %*% risk_mtx %*% OldPopulation[1,]
-  
   #Algorithm wrap up
   CodeExitTime = Sys.time()
   print("Solution convergence.")
-  print(paste("Annual returns: ", (1+mu)^252 - 1))
-  print(paste("Annual std.dev.: ", sqrt(sq*252)))
+  print(paste("Annual returns: ", (1 + as.numeric((t(OldPopulation[1,]) %*% alpha)))^252 - 1))
+  print(paste("Annual std.dev.: ", as.numeric(sqrt((t(OldPopulation[1,]) %*% omega %*% OldPopulation[1,])*sqrt(252)))))
   #plot(SolutionFitness, main = "Solution Fitness", xlab = "Generation", ylab = "Relative Fitness", type = "l", ylim = c(0,25), col = "black")
   #plot(diff(SolutionFitness), main = "Solution Growth", xlab = "Generation", ylab = "Growth in Relative Fitness", type = "l", col = "black")
-  print(paste("Fitness:", fitness_func(OldPopulation[1,], returns_mtx, risk_mtx, lambda)))
+  print(paste("Fitness:", fitness_func(OldPopulation[i,], returns_mtx, risk_mtx, skew_tsr, kurt_tsr, lambda1, lambda2, lambda3, lambda4)))
   #print("Best solution:")
   #print(OldPopulation[1,])
   print(paste("Iterations: ", iterations))
@@ -204,14 +202,16 @@ SSAGA12_PE = function(fitness_func, max_iterations, max_runtime, max_stagnation,
   #Algorithm output
   ReturnObject = c(0)
   ReturnObject$Solution = OldPopulation[1,]
-  ReturnObject$FinalFitness = as.numeric(fitness_func(OldPopulation[1,], returns_mtx, risk_mtx, lambda))
+  ReturnObject$FinalFitness = as.numeric(fitness_func(OldPopulation[i,], returns_mtx, risk_mtx, skew_tsr, kurt_tsr, lambda1, lambda2, lambda3, lambda4))
   ReturnObject$Iterations = iterations
   ReturnObject$RunTime = CodeExitTime - CodeEnterTime
   ReturnObject$FitnessHistory = SolutionFitness
   ReturnObject$FitnessGrowth = diff(SolutionFitness)
   ReturnObject$GeneticDiversity = SumDistance[1:iterations]
-  ReturnObject$Returns = (1+mu)^252 - 1
-  ReturnObject$Risk = sqrt(sq*252)
+  ReturnObject$Returns = (1 + as.numeric((t(OldPopulation[1,]) %*% alpha)))^252 - 1
+  ReturnObject$Risk = as.numeric(sqrt((t(OldPopulation[1,]) %*% omega %*% OldPopulation[1,])*sqrt(252)))
+  ReturnObject$Skew = (t(OldPopulation[1,]) %*% skew_tsr %*% (OldPopulation[1,] %x% OldPopulation[1,]))
+  ReturnObject$Kurt = (t(OldPopulation[1,]) %*% kurt_tsr %*% (OldPopulation[1,] %x% OldPopulation[1,] %x% OldPopulation[1,]))
   ReturnObject = ReturnObject[-1]
   return(ReturnObject)
   
