@@ -36,7 +36,7 @@ fitness_function_Markowitz_EFHOM = function(weights, returns, risk, skew, kurt, 
 
 ################### DATA IMPORT ################### 
 
-Dowdata = read.csv("C:\\Users\\DIEHLAT\\Desktop\\Dowdata.csv")
+Dowdata = read.csv("DowData.csv")
 
 nRows = as.numeric(dim(Dowdata)[1])
 nCols = as.numeric(dim(Dowdata)[2])
